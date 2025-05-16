@@ -1,0 +1,1446 @@
+openapi: 3.0.0
+info:
+  title:  API Generación de informacion del QR de Proveedores Directos
+  description: |
+    API de Sistema que expone la version 1.0 de los servicios: 
+    1. Enviar informacion de ordenes escaneados.
+
+    El servicio cumple con lo siguiente:
+    - **Protocolo**: *HTTPS*
+    - **Seguridad**: *Oauth 2.0*
+    - **Versionamiento**: *Explícito en la URL*
+    - **Formato estándar de Intercambio**: *JSON*
+    - **Estándares de Diseño**: *REST | HTTP | OpenAPI 3.x.x* 
+
+    **Lectura Recomendada**:
+    1. [OpenAPI Documentation](https://swagger.io/specification/)
+    2. [REST Dissertation](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
+    3. [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231)
+  version: v1
+servers:
+  - url: 'https://api-dev.oxxo.io/sys-cnt/api/v1'
+    description: DEV
+security:
+  - ApiKeyAuth: []
+  - OAuth2:
+      - read
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-Gateway-APIKey
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://api.oxxo.io/invoke/pub.apigateway.oauth2/getAccessToken'
+          scopes:
+            read: Grants read access
+paths:    
+  /order_qr_scanreple:
+    post:
+      tags:
+        - QR order
+      summary: Generacion de QR de pedido registrada.
+      description: Generacion de QR de un pedido Reple/sinergia.
+      operationId: postQrRepleGeneration
+
+      parameters:
+        - in: header
+          name: Tracking-Id
+          schema:
+            type: string
+            format: uuid
+            example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
+          required: true
+          description: Identificador único utilizado para trazabilidad de la petición.
+        - in: header
+          name: Channel-Id
+          schema:
+            type: string
+            example: MOBILE
+            pattern: '[A-Z]'
+          required: true
+          example: MOBILE
+          description: Canal de consumo del servicio. Ejemplos - |MOBILE|APP|.
+        - in: header
+          name: Country-Code
+          schema:
+            type: string
+            pattern: '[A-Z]'
+          required: true
+          example: MX
+          description: País desde donde se ejecuta la petición. Ejemplos - MX|US|CO|CL|BR.
+        - in: header
+          name: Language
+          schema:
+            type: string
+            example: SPA
+          required: true
+          example: SPA
+          description: Lenguaje soportado del contenido. Ejemplo - SPA = Español (Único soportado).
+        - in: header
+          name: User-Agent
+          schema:
+            type: string
+            example: exampleApp/1.0
+          required: true
+          example: exampleApp/1.0 <comments>
+          description: 'Agente de usuario que permite a los servidores y servicios de red identificar la aplicación, sistema operativo, compañía, y/o la versión del user agent (en-US) que hace la invocación. Syntax - product / product-version comment.'
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+          required: true
+          example: application/json
+          description: Indica el tipo de contenido del recurso que se va transmitir por la petición.
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+          example: Bearer c5652972-85c8-427c-b30c-b1c149a1ff70
+          description: Contiene la información para autenticar a un usuario en el sistema y permitirle el acceso a un recurso protegido. Token de Acceso se obtiene mediante la suscripción al API.
+        - in: header
+          name: x-Gateway-APIKey
+          schema:
+            type: string
+            format: uuid
+          required: true
+          example: aacb0ad9-94dc-4dbb-85d5-e03f85fd068c
+          description: identificador único que sirve para identificar a una aplicación o usuario. API Key se obtiene mediante la suscripción al API.
+      requestBody:
+        description: Cuerpo de petición que contiene los parametros de entrada .
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - crPlaza
+                - crTienda
+                - fuenteAbasto
+                - numeroPedido
+                - skuS
+                - deviceId
+              properties:
+                crPlaza:
+                  type: string
+                  nullable: false
+                  maxLength: 5
+                  minLength: 5
+                  description: CR Plaza de la tienda a la cual pertenece el pedido
+                crTienda:
+                  type: string
+                  nullable: false
+                  minLength: 5
+                  description: CR de la tienda a la cual pertenece el pedido
+                fuenteAbasto:
+                  type: number
+                  nullable: false
+                  maximum: 20
+                  minimum: 1
+                  description: Fuente de abasto
+                numeroPedido:
+                  type: number
+                  nullable: false
+                  maximum: 20
+                  minimum: 1
+                  description: Numero de pedido a ingresar
+                skuS:
+                  type: array
+                  description: Lista de skuS a entregar
+                  items:
+                   type: object
+                   required:
+                     - sku
+                     - u
+                   properties:
+                    sku: 
+                     type: integer
+                     nullable: false
+                     minimum: 1
+                     description: SKU del articulo
+                     example: 12345
+                    u:
+                     type: number
+                     format: float
+                     nullable: false
+                     minimum: 1
+                     description: Unidades a entregar del articulo
+                     example: 2.5
+                deviceId:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  description: Identificador único del dispositivo. 
+                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
+                               Si se intenta reutilizar, el sistema responderá con error 409.
+            example:
+                  crPlaza: "10CAN"
+                  crTienda: "10CAN"
+                  fuenteAbasto: "737377337"
+                  numeroPedido: "66"
+                  skuS: 
+                  - sku: 12345
+                    u: 3.0
+                  - sku: 67890
+                    u: 1.5
+                  deviceId: "8343e0a88a6f92b8"
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                  - qrImageBase64
+                properties:
+                  code:
+                    type: string
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+                  qrImageBase64: 
+                   type: string
+                   format: byte
+                   nullable: false
+                   description: Respuesta codificada en Base64.Contiene la estructura encriptada con TLS 1.2
+                                 que incluye la información del pedido, siguiendo el estándar de lectura del módulo
+                                 "Verificación de Mercancía Proveedores Directos" en la app "OXXO al día".
+                   example: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."  
+              example:
+                code: S200000
+                message: Success
+                qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N"
+        '400':
+          description: Unsuccessful requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S400112
+                message: The client has issued a malformed or illegal request.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S401000
+                message: The specified token is invalid or has expired
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S403000
+                message: ' Application has been identified but it is currently suspended. Please contact the API Gateway administrator for further details.'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S404000
+                message: Resource * not found
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S405000
+                message: 'Method not allowed : *'
+        '409':
+           description: Conflict - "Duplicate identifier"
+           content:
+             application/json:
+               schema:
+                 type: object
+                 required:
+                  - code
+                  - message
+                 properties:
+                    code:
+                      type: string
+                      description: Código de Error de la operación.
+                      minLength: 7
+                      maxLength: 7
+                      pattern: '^[XPS0-9]*$'
+                      nullable: false
+                    message:
+                      type: string
+                      description: Descripción de la operación.
+                      minLength: 1
+                      maxLength: 100
+                      pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                      nullable: false
+               example:
+                  deviceAlreadyRegistered:
+                    value:
+                     code: S409001
+                     message: The device has already been registered.
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S415000
+                message: Format * is not supported by the request.
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S429000
+                message: Too many requests. please try gain later
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              examples:
+                '500':
+                  value:
+                    code: S500000
+                    message: 'Internal server error has occurred, please try again later.'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S503000
+                message: 'Service not available, please try again later.'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S504000
+                message: 'Connection timed out, please try again later.'
+  /order_qr_scantradicional:
+    post:
+      tags:
+        - QR order
+      summary: Generacion de QR de pedido registrada.
+      description: Generacion de QR de un pedido Tradicional.
+      operationId: postQrTradicionalGeneration
+   
+      parameters:
+        - in: header
+          name: Tracking-Id
+          schema:
+            type: string
+            format: uuid
+            example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
+          required: true
+          description: Identificador único utilizado para trazabilidad de la petición.
+        - in: header
+          name: Channel-Id
+          schema:
+            type: string
+            example: MOBILE
+            pattern: '[A-Z]'
+          required: true
+          example: MOBILE
+          description: Canal de consumo del servicio. Ejemplos - |MOBILE|APP|.
+        - in: header
+          name: Country-Code
+          schema:
+            type: string
+            pattern: '[A-Z]'
+          required: true
+          example: MX
+          description: País desde donde se ejecuta la petición. Ejemplos - MX|US|CO|CL|BR.
+        - in: header
+          name: Language
+          schema:
+            type: string
+            example: SPA
+          required: true
+          example: SPA
+          description: Lenguaje soportado del contenido. Ejemplo - SPA = Español (Único soportado).
+        - in: header
+          name: User-Agent
+          schema:
+            type: string
+            example: exampleApp/1.0
+          required: true
+          example: exampleApp/1.0 <comments>
+          description: 'Agente de usuario que permite a los servidores y servicios de red identificar la aplicación, sistema operativo, compañía, y/o la versión del user agent (en-US) que hace la invocación. Syntax - product / product-version comment.'
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+          required: true
+          example: application/json
+          description: Indica el tipo de contenido del recurso que se va transmitir por la petición.
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+          example: Bearer c5652972-85c8-427c-b30c-b1c149a1ff70
+          description: Contiene la información para autenticar a un usuario en el sistema y permitirle el acceso a un recurso protegido. Token de Acceso se obtiene mediante la suscripción al API.
+        - in: header
+          name: x-Gateway-APIKey
+          schema:
+            type: string
+            format: uuid
+          required: true
+          example: aacb0ad9-94dc-4dbb-85d5-e03f85fd068c
+          description: identificador único que sirve para identificar a una aplicación o usuario. API Key se obtiene mediante la suscripción al API.
+      requestBody:
+          description: Cuerpo de petición que contiene los parametros de entrada .
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - fuenteAbasto
+                - skuS
+                - deviceId
+                properties:
+                 fuenteAbasto:
+                  type: number
+                  nullable: false
+                  minimum: 1
+                  description: Fuente de abasto
+                 skuS:
+                  type: array
+                  description: Lista de skuS a entregar
+                  items:
+                   type: object
+                   required:
+                     - sku
+                     - u
+                   properties:
+                    sku: 
+                     type: integer
+                     nullable: false
+                     minimum: 1
+                     description: SKU del articulo
+                     example: 12345
+                    u:
+                     type: number
+                     format: float
+                     nullable: false
+                     minimum: 1
+                     description: Unidades a entregar del articulo
+                     example: 2.5
+                 deviceId:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  description: Identificador único del dispositivo. 
+                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
+                               Si se intenta reutilizar, el sistema responderá con error 409
+              example:
+                  fuenteAbasto: "737377337"
+                  skuS: 
+                  - sku: 12345
+                    u: 3.0
+                  - sku: 67890
+                    u: 1.5
+                  deviceId: "8343e0a88a6f92b8"
+      
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                  - qrImageBase64
+                properties:
+                  code:
+                    type: string
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+                  qrImageBase64:
+                    type: string
+                    format: byte
+                    nullable: false
+                    description: Respuesta codificada en Base64.Contiene la estructura encriptada con TLS 1.2
+                                 que incluye la información del pedido, siguiendo el estándar de lectura del módulo
+                                 "Verificación de Mercancía Proveedores Directos" en la app "OXXO al día".
+                    example: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
+              example:
+                code: S200000
+                message: Success
+                qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N"
+        '400':
+          description: Unsuccessful requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S400112
+                message: The client has issued a malformed or illegal request.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S401000
+                message: The specified token is invalid or has expired
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S403000
+                message: ' Application has been identified but it is currently suspended. Please contact the API Gateway administrator for further details.'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S404000
+                message: Resource * not found
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S405000
+                message: 'Method not allowed : *'
+        '409':
+           description: Conflict - "Duplicate identifier"
+           content:
+             application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                    code:
+                      type: string
+                      description: Código de Error de la operación.
+                      minLength: 7
+                      maxLength: 7
+                      pattern: '^[XPS0-9]*$'
+                      nullable: false
+                    message:
+                      type: string
+                      description: Descripción de la operación.
+                      minLength: 1
+                      maxLength: 100
+                      pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                      nullable: false
+              examples:
+                  deviceAlreadyRegistered:
+                    value:
+                     code: S409001
+                     message: The device has already been registered.
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S415000
+                message: Format * is not supported by the request.
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S429000
+                message: Too many requests. please try gain later
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                '500':
+                  value:
+                    code: S500000
+                    message: 'Internal server error has occurred, please try again later.'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S503000
+                message: 'Service not available, please try again later.'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S504000
+                message: 'Connection timed out, please try again later.'
+  /order_qr_scansinentrega:
+    post:
+      tags:
+        - QR order
+      summary: Generacion de QR de pedido registrada.
+      description: Generacion de QR de una visita sin entrega.
+      operationId: postQrSinEntregaGeneration
+      parameters:
+        - in: header
+          name: Tracking-Id
+          schema:
+            type: string
+            format: uuid
+            example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
+          required: true
+          description: Identificador único utilizado para trazabilidad de la petición.
+        - in: header
+          name: Channel-Id
+          schema:
+            type: string
+            example: MOBILE
+            pattern: '[A-Z]'
+          required: true
+          example: MOBILE
+          description: Canal de consumo del servicio. Ejemplos - |MOBILE|APP|.
+        - in: header
+          name: Country-Code
+          schema:
+            type: string
+            pattern: '[A-Z]'
+          required: true
+          example: MX
+          description: País desde donde se ejecuta la petición. Ejemplos - MX|US|CO|CL|BR.
+        - in: header
+          name: Language
+          schema:
+            type: string
+            example: SPA
+          required: true
+          example: SPA
+          description: Lenguaje soportado del contenido. Ejemplo - SPA = Español (Único soportado).
+        - in: header
+          name: User-Agent
+          schema:
+            type: string
+            example: exampleApp/1.0
+          required: true
+          example: exampleApp/1.0 <comments>
+          description: 'Agente de usuario que permite a los servidores y servicios de red identificar la aplicación, sistema operativo, compañía, y/o la versión del user agent (en-US) que hace la invocación. Syntax - product / product-version comment.'
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+          required: true
+          example: application/json
+          description: Indica el tipo de contenido del recurso que se va transmitir por la petición.
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+          example: Bearer c5652972-85c8-427c-b30c-b1c149a1ff70
+          description: Contiene la información para autenticar a un usuario en el sistema y permitirle el acceso a un recurso protegido. Token de Acceso se obtiene mediante la suscripción al API.
+        - in: header
+          name: x-Gateway-APIKey
+          schema:
+            type: string
+            format: uuid
+          required: true
+          example: aacb0ad9-94dc-4dbb-85d5-e03f85fd068c
+          description: identificador único que sirve para identificar a una aplicación o usuario. API Key se obtiene mediante la suscripción al API.
+      requestBody:
+        description: Cuerpo de petición que contiene los parametros de entrada .
+        required: true
+        content:
+          application/json:
+              schema:
+               type: object
+               required:
+                - crPlaza
+                - crTienda
+                - fuenteAbasto
+                - deviceId
+               properties:
+                  crPlaza:
+                   type: string
+                   nullable: false
+                   maxLength: 5
+                   minLength: 5
+                   description: CR Plaza de la tienda a la cual pertenece el pedido
+                  crTienda:
+                   type: string
+                   nullable: false
+                   minLength: 5
+                   description: CR de la tienda a la cual pertenece el pedido
+                  fuenteAbasto:
+                   type: number
+                   nullable: false
+                   minimum: 1
+                   description: Fuente de abasto
+                  deviceId:
+                   type: string
+                   nullable: false
+                   minLength: 1
+                   description: Identificador único del dispositivo. 
+                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
+                               Si se intenta reutilizar, el sistema responderá con error 409
+              example:
+                  crPlaza: "10CAN"
+                  crTienda: "10CAN"
+                  fuenteAbasto: "737377337"
+                  deviceId: "8343e0a88a6f92b8"
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                  - qrImageBase64
+                properties:
+                  code:
+                    type: string
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+                  qrImageBase64:
+                   type: string
+                   format: byte
+                   nullable: false
+                   description: Respuesta codificada en Base64.Contiene la estructura encriptada con TLS 1.2
+                                 que incluye la información del pedido, siguiendo el estándar de lectura del módulo
+                                 "Verificación de Mercancía Proveedores Directos" en la app "OXXO al día".
+                   example: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
+              example:
+                code: S200000
+                message: Success
+                qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N"
+        '400':
+          description: Unsuccessful requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S400112
+                message: The client has issued a malformed or illegal request.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S401000
+                message: The specified token is invalid or has expired
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S403000
+                message: ' Application has been identified but it is currently suspended. Please contact the API Gateway administrator for further details.'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S404000
+                message: Resource * not found
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S405000
+                message: 'Method not allowed : *'
+        '409':
+           description: Conflict - "Duplicate identifier"
+           content:
+             application/json:
+              schema:
+                 type: object
+                 required:
+                  - code
+                  - message
+                 properties:
+                    code:
+                      type: string
+                      description: Código de Error de la operación.
+                      minLength: 7
+                      maxLength: 7
+                      pattern: '^[XPS0-9]*$'
+                      nullable: false
+                    message:
+                      type: string
+                      description: Descripción de la operación.
+                      minLength: 1
+                      maxLength: 100
+                      pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                      nullable: false
+              example:
+                  deviceAlreadyRegistered:
+                    value:
+                     code: S409001
+                     message: The device has already been registered.
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S415000
+                message: Format * is not supported by the request.
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S429000
+                message: Too many requests. please try gain later
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                '500':
+                  value:
+                    code: S500000
+                    message: 'Internal server error has occurred, please try again later.'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S503000
+                message: 'Service not available, please try again later.'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S504000
+                message: 'Connection timed out, please try again later.'

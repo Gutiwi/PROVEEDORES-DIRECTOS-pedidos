@@ -1,0 +1,15 @@
+
+{
+    "crPlaza": "10CAN",
+    "crTienda": "10CAN",
+    "fuenteAbasto": "737377337",
+    "numeroPedido": "66",
+    "skuS": [{
+             
+        "s": "7500478001057",
+        "u" : 1.5
+
+    }
+    ],            
+    "deviceId": "8343e0a88a6f92b8"
+}

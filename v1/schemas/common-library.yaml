@@ -1,0 +1,114 @@
+# *************************************
+## Definir todos los objetos comunes ##
+# *************************************
+
+QRProcessingRequest:
+  type: object
+  description: Datos requeridos para procesar la lectura del QR
+  required: true
+  content:
+    application/json:
+      schema:
+        required:
+          - crPlaza
+          - crTienda
+          - fuenteAbasto
+          - numeroPedido
+          - deviceId
+        properties:
+          crPlaza:
+            type: string
+            nullable: false
+            maxLength: 5
+            minLength: 5
+            description: CR crPlaza a la cual pertenece el pedido
+          crTienda:
+            type: string
+            nullable: false
+            minLength: 5
+            description: CR de la tienda a la cual pertenece el pedido
+          fuenteAbasto:
+            type: number
+            nullable: false
+            maximum: 20
+            minimum: 1
+            description: CR de la tienda a la cual pertenece el pedido
+          numeroPedido:
+            type: number
+            nullable: false
+            maximum: 20
+            minimum: 1
+            description: fecha final
+          deviceId:
+            type: string
+            nullable: false
+            minLength: 1
+            description: Identificador único del dispositivo. 
+                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
+                               Si se intenta reutilizar, el sistema responderá con error 409.
+
+
+
+FeaturesProcessingTO:
+  type: object
+  required:
+    - code  
+    - message
+  properties:
+    code:
+      type: string
+      description: Código de Error de la operación.
+      minLength: 7
+      maxLength: 7
+      pattern: '^[XPS0-9]*$'
+      nullable: false
+    message:
+      type: string
+      description: Descripción de la operación.
+      minLength: 1
+      maxLength: 100
+      pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+      nullable: false         
+
+
+
+ErrorTO:
+  type: object
+  required:
+    - code  
+    - message
+  properties:
+    code:
+      type: string
+      description: Código de Error de la operación.
+      minLength: 7
+      maxLength: 7
+      pattern: '^[XPS0-9]*$'
+      nullable: false
+    message:
+      type: string
+      description: Descripción de la operación.
+      minLength: 1
+      maxLength: 100
+      pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+      nullable: false
+ErrorNativeTO:
+  type: object
+  required:
+    - code  
+    - message
+  properties:
+    code:
+      type: string
+      description: Código de Error de la operación.
+      minLength: 7
+      maxLength: 7
+      pattern: '^[XPS0-9]*$'
+      nullable: false
+    message:
+      type: string
+      description: Descripción de la operación.
+      minLength: 1
+      maxLength: 100
+      pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+      nullable: false

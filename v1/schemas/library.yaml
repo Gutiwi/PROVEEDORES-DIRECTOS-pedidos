@@ -1,0 +1,15 @@
+# *******************************************************************************
+## Declarar Parámetros de Solicitud y Respuesta | Request Body | Response Body ##
+# *******************************************************************************
+components:
+  parameters: ## Declaración de Parámetros de solicitud (URI PARAM | QUERY PARAM)
+  requestBodies: ## Declaración de cuerpos de solicitud
+    QRProcessingRequest:
+      $ref: 'common-library.yaml#/QRProcessingRequest'
+ 
+
+    
+      
+  responses:
+    FeaturesProcessing:
+      $ref: 'common-library.yaml#/FeaturesProcessingTO'
