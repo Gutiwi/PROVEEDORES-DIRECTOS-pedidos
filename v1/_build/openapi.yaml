@@ -38,7 +38,7 @@ components:
           scopes:
             read: Grants read access
 paths:    
-  /order_qr_scanreple:
+  /orderQRScanReple:
     post:
       tags:
         - QR order
@@ -527,7 +527,7 @@ paths:
               example:
                 code: S504000
                 message: 'Connection timed out, please try again later.'
-  /order_qr_scantradicional:
+  /orderQRScanTradicional:
     post:
       tags:
         - QR order
@@ -993,7 +993,7 @@ paths:
               example:
                 code: S504000
                 message: 'Connection timed out, please try again later.'
-  /order_qr_scansinentrega:
+  /orderQRScansinEntrega:
     post:
       tags:
         - QR order
