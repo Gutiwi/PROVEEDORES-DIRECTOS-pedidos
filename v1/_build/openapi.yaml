@@ -120,8 +120,8 @@ paths:
               required:
                 - crPlaza
                 - crTienda
-                - fuenteAbasto
-                - numeroPedido
+                - supplySource
+                - orderPurchase
                 - skuS
                 - deviceId
               properties:
@@ -136,13 +136,13 @@ paths:
                   nullable: false
                   minLength: 5
                   description: CR de la tienda a la cual pertenece el pedido
-                fuenteAbasto:
+                supplySource:
                   type: number
                   nullable: false
                   maximum: 20
                   minimum: 1
                   description: Fuente de abasto
-                numeroPedido:
+                orderPurchase:
                   type: number
                   nullable: false
                   maximum: 20
@@ -180,8 +180,8 @@ paths:
             example:
                   crPlaza: "10CAN"
                   crTienda: "10CAN"
-                  fuenteAbasto: "737377337"
-                  numeroPedido: "66"
+                  supplySource: "737377337"
+                  orderPurchase: "66"
                   skuS: 
                   - sku: 12345
                     u: 3.0
@@ -607,11 +607,11 @@ paths:
               schema:
                 type: object
                 required:
-                - fuenteAbasto
+                - supplySource
                 - skuS
                 - deviceId
                 properties:
-                 fuenteAbasto:
+                 supplySource:
                   type: number
                   nullable: false
                   minimum: 1
@@ -646,7 +646,7 @@ paths:
                                Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
                                Si se intenta reutilizar, el sistema responderá con error 409
               example:
-                  fuenteAbasto: "737377337"
+                  supplySource: "737377337"
                   skuS: 
                   - sku: 12345
                     u: 3.0
@@ -1072,23 +1072,10 @@ paths:
               schema:
                type: object
                required:
-                - crPlaza
-                - crTienda
-                - fuenteAbasto
+                - supplySource
                 - deviceId
                properties:
-                  crPlaza:
-                   type: string
-                   nullable: false
-                   maxLength: 5
-                   minLength: 5
-                   description: CR Plaza de la tienda a la cual pertenece el pedido
-                  crTienda:
-                   type: string
-                   nullable: false
-                   minLength: 5
-                   description: CR de la tienda a la cual pertenece el pedido
-                  fuenteAbasto:
+                  supplySource:
                    type: number
                    nullable: false
                    minimum: 1
@@ -1101,9 +1088,7 @@ paths:
                                Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
                                Si se intenta reutilizar, el sistema responderá con error 409
               example:
-                  crPlaza: "10CAN"
-                  crTienda: "10CAN"
-                  fuenteAbasto: "737377337"
+                  supplySource: "737377337"
                   deviceId: "8343e0a88a6f92b8"
       responses:
         '200':
