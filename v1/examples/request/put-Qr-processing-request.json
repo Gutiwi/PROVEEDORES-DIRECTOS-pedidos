@@ -2,8 +2,8 @@
 {
     "crPlaza": "10CAN",
     "crTienda": "10CAN",
-    "fuenteAbasto": "737377337",
-    "numeroPedido": "66",
+    "supplySource": "737377337",
+    "orderPurchase": "66",
     "skuS": [{
              
         "s": "7500478001057",
