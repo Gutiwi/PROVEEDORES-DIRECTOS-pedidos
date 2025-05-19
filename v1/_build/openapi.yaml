@@ -150,12 +150,12 @@ paths:
                   description: Numero de pedido a ingresar
                 skus:
                   type: array
-                  description: Lista de skuS a entregar
+                  description: Lista de skus a entregar
                   items:
                    type: object
                    required:
                      - s
-                     - u
+                     - a
                    properties:
                     s: 
                      type: integer
@@ -184,9 +184,9 @@ paths:
                   orderPurchase: "66"
                   skus: 
                   - s: 12345
-                    u: 3.0
+                    a: 3.0
                   - s: 67890
-                    u: 1.5
+                    a: 1.5
                   deviceId: "8343e0a88a6f92b8"
       responses:
         '200':
@@ -618,12 +618,12 @@ paths:
                   description: Fuente de abasto
                  skus:
                   type: array
-                  description: Lista de skuS a entregar
+                  description: Lista de skus a entregar
                   items:
                    type: object
                    required:
                      - s
-                     - u
+                     - a
                    properties:
                     s: 
                      type: integer
@@ -649,9 +649,9 @@ paths:
                   supplySource: "737377337"
                   skus: 
                   - s: 12345
-                    u: 3.0
+                    a: 3.0
                   - s: 67890
-                    u: 1.5
+                    a: 1.5
                   deviceId: "8343e0a88a6f92b8"
       
       responses:
