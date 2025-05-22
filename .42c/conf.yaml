@@ -1,0 +1,3 @@
+apis:
+  v1/_build/openapi.yaml:
+    alias: api-generaci-n-de-informacion-de

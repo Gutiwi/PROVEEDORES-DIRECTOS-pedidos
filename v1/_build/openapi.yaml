@@ -37,7 +37,384 @@ components:
           tokenUrl: 'https://api.oxxo.io/invoke/pub.apigateway.oauth2/getAccessToken'
           scopes:
             read: Grants read access
-paths:    
+paths:   
+  /deviceRegistration:
+    post:
+      tags: 
+        - Registro de Dispositivo
+      summary: Registro de un dispositivo móvil para proveedor directo
+      description: Registra un dispositivo ligado a un proveedor directo. 
+        El sistema generará un identificador único (deviceId) que deberá ser usado posteriormente 
+        en todos los demás endpoints de generación de QR y consultas operativas.
+      operationId: postDeviceRegistration
+      parameters:
+        - in: header
+          name: Tracking-Id
+          schema:
+            type: string
+            format: uuid
+            example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
+          required: true
+          description: Identificador único para trazabilidad de la petición.
+        - in: header
+          name: User-Agent
+          schema:
+            type: string
+            example: exampleApp/1.0
+          required: true
+          example: exampleApp/1.0 <comments>
+          description: 'Agente de usuario que permite a los servidores y servicios de red identificar la aplicación, sistema operativo, compañía, y/o la versión del user agent (en-US) que hace la invocación. Syntax - product / product-version comment.'
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+          example: Bearer c5652972-85c8-427c-b30c-b1c149a1ff70
+          description: Contiene la información para autenticar a un usuario en el sistema y permitirle el acceso a un recurso protegido. Token de Acceso se obtiene mediante la suscripción al API.
+        - in: header
+          name: x-Gateway-APIKey
+          schema:
+            type: string
+          required: true
+          example: aacb0ad9-94dc-4dbb-85d5-e03f85fd068c
+          description: identificador único que sirve para identificar a una aplicación o usuario. API Key se obtiene mediante la suscripción al API.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                  - deviceId
+                properties:
+                  code:
+                    type: string
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+                  deviceId: 
+                   type: string
+                   minLength: 1
+                   nullable: false
+                   description: ID único generado para el dispositivo.
+                   example: "DEV-4a8f3d29ef01"  
+              example:
+                code: S200000
+                message: Success
+                deviceId: "DEV-4a8f3d29ef01"
+        '400':
+          description: Unsuccessful requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S400112
+                message: The client has issued a malformed or illegal request.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S401000
+                message: The specified token is invalid or has expired
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S403000
+                message: ' Application has been identified but it is currently suspended. Please contact the API Gateway administrator for further details.'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S404000
+                message: Resource * not found
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S405000
+                message: 'Method not allowed : *'
+        '409':
+           description: Conflict - "Duplicate identifier"
+           content:
+             application/json:
+               schema:
+                 type: object
+                 required:
+                  - code
+                  - message
+                 properties:
+                    code:
+                      type: string
+                      description: Código de Error de la operación.
+                      minLength: 7
+                      maxLength: 7
+                      pattern: '^[XPS0-9]*$'
+                      nullable: false
+                    message:
+                      type: string
+                      description: Descripción de la operación.
+                      minLength: 1
+                      maxLength: 100
+                      pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                      nullable: false
+               example:
+                     code: S409000
+                     message: The device has already been registered.
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S415000
+                message: Format * is not supported by the request.
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S429000
+                message: Too many requests. please try gain later
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              examples:
+                '500':
+                  value:
+                    code: S500000
+                    message: 'Internal server error has occurred, please try again later.'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S503000
+                message: 'Service not available, please try again later.'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    description: Código de Error de la operación.
+                    minLength: 7
+                    maxLength: 7
+                    pattern: '^[XPS0-9]*$'
+                    nullable: false
+                  message:
+                    type: string
+                    description: Descripción de la operación.
+                    minLength: 1
+                    maxLength: 100
+                    pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
+                    nullable: false
+              example:
+                code: S504000
+                message: 'Connection timed out, please try again later.'
+
+
   /orderQRScanReple:
     post:
       tags:
@@ -163,7 +540,7 @@ paths:
                      minimum: 1
                      description: SKU del articulo
                      example: 12345
-                    u:
+                    a:
                      type: number
                      format: float
                      nullable: false
@@ -180,8 +557,8 @@ paths:
             example:
                   crPlaza: "10CAN"
                   crTienda: "10CAN"
-                  supplySource: "737377337"
-                  orderPurchase: "66"
+                  supplySource: 737377337
+                  orderPurchase: 66
                   skus: 
                   - s: 12345
                     a: 3.0
@@ -468,9 +845,7 @@ paths:
                     maxLength: 100
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
-              examples:
-                '500':
-                  value:
+              example:
                     code: S500000
                     message: 'Internal server error has occurred, please try again later.'
         '503':
@@ -631,7 +1006,7 @@ paths:
                      minimum: 1
                      description: SKU del articulo
                      example: 12345
-                    u:
+                    a:
                      type: number
                      format: float
                      nullable: false
@@ -850,9 +1225,7 @@ paths:
                       maxLength: 100
                       pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                       nullable: false
-              examples:
-                  deviceAlreadyRegistered:
-                    value:
+              example:
                      code: S409001
                      message: The device has already been registered.
 
@@ -935,8 +1308,6 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                '500':
-                  value:
                     code: S500000
                     message: 'Internal server error has occurred, please try again later.'
         '503':
@@ -1371,8 +1742,6 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                '500':
-                  value:
                     code: S500000
                     message: 'Internal server error has occurred, please try again later.'
         '503':
