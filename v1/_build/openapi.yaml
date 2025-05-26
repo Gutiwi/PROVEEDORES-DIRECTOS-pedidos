@@ -499,7 +499,7 @@ paths:
                 - crTienda
                 - supplySource
                 - orderPurchase
-                - skus
+                - skuScanned
                 - deviceId
               properties:
                 crPlaza:
@@ -525,7 +525,7 @@ paths:
                   maximum: 20
                   minimum: 1
                   description: Numero de pedido a ingresar
-                skus:
+                skuScanned:
                   type: array
                   description: Lista de skus a entregar
                   items:
@@ -559,7 +559,7 @@ paths:
                   crTienda: "10CAN"
                   supplySource: 737377337
                   orderPurchase: 66
-                  skus: 
+                  skuScanned: 
                   - s: 12345
                     a: 3.0
                   - s: 67890
@@ -983,7 +983,7 @@ paths:
                 type: object
                 required:
                 - supplySource
-                - skus
+                - skuScanned
                 - deviceId
                 properties:
                  supplySource:
@@ -991,7 +991,7 @@ paths:
                   nullable: false
                   minimum: 1
                   description: Fuente de abasto
-                 skus:
+                 skuScanned:
                   type: array
                   description: Lista de skus a entregar
                   items:
@@ -1022,7 +1022,7 @@ paths:
                                Si se intenta reutilizar, el sistema responderá con error 409
               example:
                   supplySource: "737377337"
-                  skus: 
+                  skuScanned: 
                   - s: 12345
                     a: 3.0
                   - s: 67890
