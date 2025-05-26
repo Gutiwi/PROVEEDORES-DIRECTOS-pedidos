@@ -421,7 +421,7 @@ paths:
         - QR order
       summary: Generacion de QR de pedido registrada.
       description: Generacion de QR de un pedido Reple/sinergia.
-      operationId: postQrRepleGeneration
+      operationId: qrRepleGeneration
 
       parameters:
         - in: header
@@ -908,7 +908,7 @@ paths:
         - QR order
       summary: Generacion de QR de pedido registrada.
       description: Generacion de QR de un pedido Tradicional.
-      operationId: postQrTradicionalGeneration
+      operationId: qrTradicionalGeneration
    
       parameters:
         - in: header
@@ -1370,7 +1370,7 @@ paths:
         - QR order
       summary: Generacion de QR de pedido registrada.
       description: Generacion de QR de una visita sin entrega.
-      operationId: postQrSinEntregaGeneration
+      operationId: qrSinEntregaGeneration
       parameters:
         - in: header
           name: Tracking-Id
