@@ -1,607 +1,610 @@
 {
-    "version": "2.0.0",
-    "runtimeConfiguration": {
-        "environment": "default",
-        "laxTestingModeEnabled": false,
-        "apiConnectivityCheck": true,
-        "logLevel": "error",
-        "logDestination": "stdout+platform",
-        "logMaxFileSize": 2147483648,
-        "requestHeaderNameRequestId": "x-scan-request-id",
-        "requestHeaderNameScenarioId": "x-scan-scenario-id",
-        "requestHeaderNameRequestType": "x-scan-request-type",
-        "requestFlowrate": 100,
-        "requestTimeout": 30,
-        "requestTlsInsecureSkipVerify": true,
-        "responseFollowRedirection": false,
-        "responseMaxBodySizeScan": 10485760,
-        "happyPathOnly": false,
-        "maxRequestRetryAttempts": 5,
-        "maxScanDuration": 1800,
-        "memoryLimit": 2147483648,
-        "memoryTimeSpan": 10,
-        "reportMaxRequestSizeHappyPath": 8092,
-        "reportMaxRequestSizeTest": 8092,
-        "reportIncludeRequestBody": true,
-        "reportIncludeResponseBody": true,
-        "reportMaxHttpResponseSizeHappyPath": 8092,
-        "reportMaxBodySizeHappyPath": 8092,
-        "reportMaxHttpResponseSizeTest": 8092,
-        "reportMaxBodySizeTest": 8092,
-        "reportIssuesOnly": false,
-        "reportMaxIssues": 1000,
-        "reportMaxSize": 20971520,
-        "reportGenerateCurlCommand": true
+  "version": "2.0.0",
+  "runtimeConfiguration": {
+    "environment": "default",
+    "laxTestingModeEnabled": false,
+    "apiConnectivityCheck": true,
+    "logLevel": "error",
+    "logDestination": "stdout+platform",
+    "logMaxFileSize": 2147483648,
+    "requestHeaderNameRequestId": "x-scan-request-id",
+    "requestHeaderNameScenarioId": "x-scan-scenario-id",
+    "requestHeaderNameRequestType": "x-scan-request-type",
+    "requestFlowrate": 100,
+    "requestTimeout": 30,
+    "requestTlsInsecureSkipVerify": true,
+    "responseFollowRedirection": false,
+    "responseMaxBodySizeScan": 10485760,
+    "happyPathOnly": false,
+    "maxRequestRetryAttempts": 5,
+    "maxScanDuration": 1800,
+    "memoryLimit": 2147483648,
+    "memoryTimeSpan": 10,
+    "reportMaxRequestSizeHappyPath": 8092,
+    "reportMaxRequestSizeTest": 8092,
+    "reportIncludeRequestBody": true,
+    "reportIncludeResponseBody": true,
+    "reportMaxHttpResponseSizeHappyPath": 8092,
+    "reportMaxBodySizeHappyPath": 8092,
+    "reportMaxHttpResponseSizeTest": 8092,
+    "reportMaxBodySizeTest": 8092,
+    "reportIssuesOnly": false,
+    "reportMaxIssues": 1000,
+    "reportMaxSize": 20971520,
+    "reportGenerateCurlCommand": true
+  },
+  "customizations": {
+    "happyPaths": {
+      "retry": 1,
+      "responsePolicy": {
+        "httpStatusExpected": true,
+        "mustBeConformant": true
+      },
+      "httpStatusExpected": []
     },
-    "customizations": {
-        "happyPaths": {
-            "retry": 1,
-            "responsePolicy": {
-                "httpStatusExpected": true,
-                "mustBeConformant": true
-            },
-            "httpStatusExpected": []
-        },
-        "tests": {
-            "responsePolicy": {
-                "httpStatusExpected": true,
-                "mustBeConformant": true
-            }
-        }
-    },
-    "authenticationDetails": [
-        {
-            "ApiKeyAuth": {
-                "type": "apiKey",
-                "in": "header",
-                "name": "x-Gateway-APIKey",
-                "default": "ApiKeyAuth",
-                "credentials": {
-                    "ApiKeyAuth": {
-                        "description": "ApiKeyAuth security",
-                        "credential": "{{ApiKeyAuth}}"
-                    }
-                }
-            },
-            "OAuth2": {
-                "type": "oauth2",
-                "default": "OAuth2",
-                "credentials": {
-                    "OAuth2": {
-                        "description": "OAuth2 security",
-                        "credential": "{{OAuth2}}"
-                    }
-                }
-            }
-        }
-    ],
-    "operations": {
-        "postDeviceRegistration": {
-            "operationId": "postDeviceRegistration",
-            "scenarios": [
-                {
-                    "key": "happy.path",
-                    "fuzzing": true,
-                    "requests": [
-                        {
-                            "$ref": "#/operations/postDeviceRegistration/request",
-                            "fuzzing": true
-                        }
-                    ]
-                }
-            ],
-            "request": {
-                "operationId": "postDeviceRegistration",
-                "auth": [
-                    "ApiKeyAuth"
-                ],
-                "request": {
-                    "type": "42c",
-                    "details": {
-                        "url": "{{host}}/deviceRegistration",
-                        "method": "POST",
-                        "headers": [
-                            {
-                                "key": "Tracking-Id",
-                                "value": "4bd9e9c2-4989-4f21-8398-ad9d19ef0f66"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "requestBody": {
-                            "mode": "json",
-                            "json": {
-                                "deviceModel": "Samsung Galaxy A52",
-                                "osVersion": "Android 13",
-                                "providerId": "PD123456"
-                            }
-                        }
-                    }
-                },
-                "defaultResponse": "200",
-                "responses": {
-                    "200": {
-                        "expectations": {
-                            "httpStatus": 200
-                        }
-                    },
-                    "400": {
-                        "expectations": {
-                            "httpStatus": 400
-                        }
-                    },
-                    "401": {
-                        "expectations": {
-                            "httpStatus": 401
-                        }
-                    },
-                    "403": {
-                        "expectations": {
-                            "httpStatus": 403
-                        }
-                    },
-                    "404": {
-                        "expectations": {
-                            "httpStatus": 404
-                        }
-                    },
-                    "405": {
-                        "expectations": {
-                            "httpStatus": 405
-                        }
-                    },
-                    "409": {
-                        "expectations": {
-                            "httpStatus": 409
-                        }
-                    },
-                    "415": {
-                        "expectations": {
-                            "httpStatus": 415
-                        }
-                    },
-                    "429": {
-                        "expectations": {
-                            "httpStatus": 429
-                        }
-                    },
-                    "500": {
-                        "expectations": {
-                            "httpStatus": 500
-                        }
-                    },
-                    "503": {
-                        "expectations": {
-                            "httpStatus": 503
-                        }
-                    },
-                    "504": {
-                        "expectations": {
-                            "httpStatus": 504
-                        }
-                    }
-                }
-            }
-        },
-        "postQrRepleGeneration": {
-            "operationId": "postQrRepleGeneration",
-            "scenarios": [
-                {
-                    "key": "happy.path",
-                    "fuzzing": true,
-                    "requests": [
-                        {
-                            "$ref": "#/operations/postQrRepleGeneration/request",
-                            "fuzzing": true
-                        }
-                    ]
-                }
-            ],
-            "request": {
-                "operationId": "postQrRepleGeneration",
-                "auth": [
-                    "ApiKeyAuth"
-                ],
-                "request": {
-                    "type": "42c",
-                    "details": {
-                        "url": "{{host}}/orderQRScanReple",
-                        "method": "POST",
-                        "headers": [
-                            {
-                                "key": "Tracking-Id",
-                                "value": "4bd9e9c2-4989-4f21-8398-ad9d19ef0f66"
-                            },
-                            {
-                                "key": "Channel-Id",
-                                "value": "MOBILE"
-                            },
-                            {
-                                "key": "Country-Code",
-                                "value": "MX"
-                            },
-                            {
-                                "key": "Language",
-                                "value": "SPA"
-                            },
-                            {
-                                "key": "User-Agent",
-                                "value": "exampleApp/1.0 \u003ccomments\u003e"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "requestBody": {
-                            "mode": "json",
-                            "json": {
-                                "crPlaza": "10CAN",
-                                "crTienda": "10CAN",
-                                "deviceId": "8343e0a88a6f92b8",
-                                "orderPurchase": 66,
-                                "skus": [
-                                    {
-                                        "a": 3.0,
-                                        "s": 12345
-                                    },
-                                    {
-                                        "a": 1.5,
-                                        "s": 67890
-                                    }
-                                ],
-                                "supplySource": 737377337
-                            }
-                        }
-                    }
-                },
-                "defaultResponse": "200",
-                "responses": {
-                    "200": {
-                        "expectations": {
-                            "httpStatus": 200
-                        }
-                    },
-                    "400": {
-                        "expectations": {
-                            "httpStatus": 400
-                        }
-                    },
-                    "401": {
-                        "expectations": {
-                            "httpStatus": 401
-                        }
-                    },
-                    "403": {
-                        "expectations": {
-                            "httpStatus": 403
-                        }
-                    },
-                    "404": {
-                        "expectations": {
-                            "httpStatus": 404
-                        }
-                    },
-                    "405": {
-                        "expectations": {
-                            "httpStatus": 405
-                        }
-                    },
-                    "409": {
-                        "expectations": {
-                            "httpStatus": 409
-                        }
-                    },
-                    "415": {
-                        "expectations": {
-                            "httpStatus": 415
-                        }
-                    },
-                    "429": {
-                        "expectations": {
-                            "httpStatus": 429
-                        }
-                    },
-                    "500": {
-                        "expectations": {
-                            "httpStatus": 500
-                        }
-                    },
-                    "503": {
-                        "expectations": {
-                            "httpStatus": 503
-                        }
-                    },
-                    "504": {
-                        "expectations": {
-                            "httpStatus": 504
-                        }
-                    }
-                }
-            }
-        },
-        "postQrSinEntregaGeneration": {
-            "operationId": "postQrSinEntregaGeneration",
-            "scenarios": [
-                {
-                    "key": "happy.path",
-                    "fuzzing": true,
-                    "requests": [
-                        {
-                            "$ref": "#/operations/postQrSinEntregaGeneration/request",
-                            "fuzzing": true
-                        }
-                    ]
-                }
-            ],
-            "request": {
-                "operationId": "postQrSinEntregaGeneration",
-                "auth": [
-                    "ApiKeyAuth"
-                ],
-                "request": {
-                    "type": "42c",
-                    "details": {
-                        "url": "{{host}}/orderQRScansinEntrega",
-                        "method": "POST",
-                        "headers": [
-                            {
-                                "key": "Channel-Id",
-                                "value": "MOBILE"
-                            },
-                            {
-                                "key": "Country-Code",
-                                "value": "MX"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Language",
-                                "value": "SPA"
-                            },
-                            {
-                                "key": "User-Agent",
-                                "value": "exampleApp/1.0 \u003ccomments\u003e"
-                            },
-                            {
-                                "key": "Tracking-Id",
-                                "value": "4bd9e9c2-4989-4f21-8398-ad9d19ef0f66"
-                            }
-                        ],
-                        "requestBody": {
-                            "mode": "json",
-                            "json": {
-                                "deviceId": "8343e0a88a6f92b8",
-                                "supplySource": "737377337"
-                            }
-                        }
-                    }
-                },
-                "defaultResponse": "200",
-                "responses": {
-                    "200": {
-                        "expectations": {
-                            "httpStatus": 200
-                        }
-                    },
-                    "400": {
-                        "expectations": {
-                            "httpStatus": 400
-                        }
-                    },
-                    "401": {
-                        "expectations": {
-                            "httpStatus": 401
-                        }
-                    },
-                    "403": {
-                        "expectations": {
-                            "httpStatus": 403
-                        }
-                    },
-                    "404": {
-                        "expectations": {
-                            "httpStatus": 404
-                        }
-                    },
-                    "405": {
-                        "expectations": {
-                            "httpStatus": 405
-                        }
-                    },
-                    "409": {
-                        "expectations": {
-                            "httpStatus": 409
-                        }
-                    },
-                    "415": {
-                        "expectations": {
-                            "httpStatus": 415
-                        }
-                    },
-                    "429": {
-                        "expectations": {
-                            "httpStatus": 429
-                        }
-                    },
-                    "500": {
-                        "expectations": {
-                            "httpStatus": 500
-                        }
-                    },
-                    "503": {
-                        "expectations": {
-                            "httpStatus": 503
-                        }
-                    },
-                    "504": {
-                        "expectations": {
-                            "httpStatus": 504
-                        }
-                    }
-                }
-            }
-        },
-        "postQrTradicionalGeneration": {
-            "operationId": "postQrTradicionalGeneration",
-            "scenarios": [
-                {
-                    "key": "happy.path",
-                    "fuzzing": true,
-                    "requests": [
-                        {
-                            "$ref": "#/operations/postQrTradicionalGeneration/request",
-                            "fuzzing": true
-                        }
-                    ]
-                }
-            ],
-            "request": {
-                "operationId": "postQrTradicionalGeneration",
-                "auth": [
-                    "ApiKeyAuth"
-                ],
-                "request": {
-                    "type": "42c",
-                    "details": {
-                        "url": "{{host}}/orderQRScanTradicional",
-                        "method": "POST",
-                        "headers": [
-                            {
-                                "key": "Channel-Id",
-                                "value": "MOBILE"
-                            },
-                            {
-                                "key": "Country-Code",
-                                "value": "MX"
-                            },
-                            {
-                                "key": "Language",
-                                "value": "SPA"
-                            },
-                            {
-                                "key": "User-Agent",
-                                "value": "exampleApp/1.0 \u003ccomments\u003e"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Tracking-Id",
-                                "value": "4bd9e9c2-4989-4f21-8398-ad9d19ef0f66"
-                            }
-                        ],
-                        "requestBody": {
-                            "mode": "json",
-                            "json": {
-                                "deviceId": "8343e0a88a6f92b8",
-                                "skus": [
-                                    {
-                                        "a": 3.0,
-                                        "s": 12345
-                                    },
-                                    {
-                                        "a": 1.5,
-                                        "s": 67890
-                                    }
-                                ],
-                                "supplySource": "737377337"
-                            }
-                        }
-                    }
-                },
-                "defaultResponse": "200",
-                "responses": {
-                    "200": {
-                        "expectations": {
-                            "httpStatus": 200
-                        }
-                    },
-                    "400": {
-                        "expectations": {
-                            "httpStatus": 400
-                        }
-                    },
-                    "401": {
-                        "expectations": {
-                            "httpStatus": 401
-                        }
-                    },
-                    "403": {
-                        "expectations": {
-                            "httpStatus": 403
-                        }
-                    },
-                    "404": {
-                        "expectations": {
-                            "httpStatus": 404
-                        }
-                    },
-                    "405": {
-                        "expectations": {
-                            "httpStatus": 405
-                        }
-                    },
-                    "409": {
-                        "expectations": {
-                            "httpStatus": 409
-                        }
-                    },
-                    "415": {
-                        "expectations": {
-                            "httpStatus": 415
-                        }
-                    },
-                    "429": {
-                        "expectations": {
-                            "httpStatus": 429
-                        }
-                    },
-                    "500": {
-                        "expectations": {
-                            "httpStatus": 500
-                        }
-                    },
-                    "503": {
-                        "expectations": {
-                            "httpStatus": 503
-                        }
-                    },
-                    "504": {
-                        "expectations": {
-                            "httpStatus": 504
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "environments": {
-        "default": {
-            "variables": {
-                "ApiKeyAuth": {
-                    "from": "environment",
-                    "name": "SCAN42C_SECURITY_APIKEYAUTH",
-                    "required": true
-                },
-                "OAuth2": {
-                    "from": "environment",
-                    "name": "SCAN42C_SECURITY_OAUTH2",
-                    "required": false,
-                    "default": "secret_to_be_overridden"
-                },
-                "host": {
-                    "from": "environment",
-                    "name": "SCAN42C_HOST",
-                    "required": false,
-                    "default": "https://api-dev.oxxo.io/sys-cnt/api/v1"
-                }
-            }
-        }
+    "tests": {
+      "responsePolicy": {
+        "httpStatusExpected": true,
+        "mustBeConformant": true
+      }
     }
+  },
+  "authenticationDetails": [
+    {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-Gateway-APIKey",
+        "default": "ApiKeyAuth",
+        "credentials": {
+          "ApiKeyAuth": {
+            "description": "ApiKeyAuth security",
+            "credential": "{{ApiKeyAuth}}"
+          }
+        }
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "default": "OAuth2",
+        "credentials": {
+          "OAuth2": {
+            "description": "OAuth2 security",
+            "credential": "{{OAuth2}}"
+          }
+        }
+      }
+    }
+  ],
+  "operations": {
+    "postDeviceRegistration": {
+      "operationId": "postDeviceRegistration",
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "fuzzing": true,
+          "requests": [
+            {
+              "$ref": "#/operations/postDeviceRegistration/request",
+              "fuzzing": true
+            }
+          ]
+        }
+      ],
+      "request": {
+        "operationId": "postDeviceRegistration",
+        "auth": [
+          "ApiKeyAuth"
+        ],
+        "request": {
+          "type": "42c",
+          "details": {
+            "url": "{{host}}/deviceRegistration",
+            "method": "POST",
+            "headers": [
+              {
+                "key": "Tracking-Id",
+                "value": "4bd9e9c2-4989-4f21-8398-ad9d19ef0f66"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "deviceModel": "Samsung Galaxy A52",
+                "osVersion": "Android 13",
+                "providerId": "PD123456"
+              }
+            }
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "400": {
+            "expectations": {
+              "httpStatus": 400
+            }
+          },
+          "401": {
+            "expectations": {
+              "httpStatus": 401
+            }
+          },
+          "403": {
+            "expectations": {
+              "httpStatus": 403
+            }
+          },
+          "404": {
+            "expectations": {
+              "httpStatus": 404
+            }
+          },
+          "405": {
+            "expectations": {
+              "httpStatus": 405
+            }
+          },
+          "409": {
+            "expectations": {
+              "httpStatus": 409
+            }
+          },
+          "415": {
+            "expectations": {
+              "httpStatus": 415
+            }
+          },
+          "429": {
+            "expectations": {
+              "httpStatus": 429
+            }
+          },
+          "500": {
+            "expectations": {
+              "httpStatus": 500
+            }
+          },
+          "503": {
+            "expectations": {
+              "httpStatus": 503
+            }
+          },
+          "504": {
+            "expectations": {
+              "httpStatus": 504
+            }
+          }
+        }
+      }
+    },
+    "qrRepleGeneration": {
+      "operationId": "qrRepleGeneration",
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "fuzzing": true,
+          "requests": [
+            {
+              "$ref": "#/operations/qrRepleGeneration/request",
+              "fuzzing": true
+            }
+          ]
+        }
+      ],
+      "request": {
+        "operationId": "qrRepleGeneration",
+        "auth": [
+          "ApiKeyAuth"
+        ],
+        "request": {
+          "type": "42c",
+          "details": {
+            "url": "{{host}}/orderQRScanReple",
+            "method": "POST",
+            "headers": [
+              {
+                "key": "Tracking-Id",
+                "value": "4bd9e9c2-4989-4f21-8398-ad9d19ef0f66"
+              },
+              {
+                "key": "Channel-Id",
+                "value": "MOBILE"
+              },
+              {
+                "key": "Country-Code",
+                "value": "MX"
+              },
+              {
+                "key": "Language",
+                "value": "SPA"
+              },
+              {
+                "key": "User-Agent",
+                "value": "exampleApp/1.0 <comments>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "crPlaza": "10CAN",
+                "crTienda": "10CAN",
+                "deviceId": "8343e0a88a6f92b8",
+                "orderPurchase": 66,
+                "skus": [
+                  {
+                    "a": 3,
+                    "s": 12345
+                  },
+                  {
+                    "a": 1.5,
+                    "s": 67890
+                  }
+                ],
+                "supplySource": 737377337
+              }
+            },
+            "operationId": "qrRepleGeneration"
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "400": {
+            "expectations": {
+              "httpStatus": 400
+            }
+          },
+          "401": {
+            "expectations": {
+              "httpStatus": 401
+            }
+          },
+          "403": {
+            "expectations": {
+              "httpStatus": 403
+            }
+          },
+          "404": {
+            "expectations": {
+              "httpStatus": 404
+            }
+          },
+          "405": {
+            "expectations": {
+              "httpStatus": 405
+            }
+          },
+          "409": {
+            "expectations": {
+              "httpStatus": 409
+            }
+          },
+          "415": {
+            "expectations": {
+              "httpStatus": 415
+            }
+          },
+          "429": {
+            "expectations": {
+              "httpStatus": 429
+            }
+          },
+          "500": {
+            "expectations": {
+              "httpStatus": 500
+            }
+          },
+          "503": {
+            "expectations": {
+              "httpStatus": 503
+            }
+          },
+          "504": {
+            "expectations": {
+              "httpStatus": 504
+            }
+          }
+        }
+      }
+    },
+    "qrTradicionalGeneration": {
+      "operationId": "qrTradicionalGeneration",
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "fuzzing": true,
+          "requests": [
+            {
+              "$ref": "#/operations/qrTradicionalGeneration/request",
+              "fuzzing": true
+            }
+          ]
+        }
+      ],
+      "request": {
+        "operationId": "qrTradicionalGeneration",
+        "auth": [
+          "ApiKeyAuth"
+        ],
+        "request": {
+          "type": "42c",
+          "details": {
+            "url": "{{host}}/orderQRScanTradicional",
+            "method": "POST",
+            "headers": [
+              {
+                "key": "Channel-Id",
+                "value": "MOBILE"
+              },
+              {
+                "key": "Country-Code",
+                "value": "MX"
+              },
+              {
+                "key": "Language",
+                "value": "SPA"
+              },
+              {
+                "key": "User-Agent",
+                "value": "exampleApp/1.0 <comments>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Tracking-Id",
+                "value": "4bd9e9c2-4989-4f21-8398-ad9d19ef0f66"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "deviceId": "8343e0a88a6f92b8",
+                "skus": [
+                  {
+                    "a": 3,
+                    "s": 12345
+                  },
+                  {
+                    "a": 1.5,
+                    "s": 67890
+                  }
+                ],
+                "supplySource": "737377337"
+              }
+            },
+            "operationId": "qrTradicionalGeneration"
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "400": {
+            "expectations": {
+              "httpStatus": 400
+            }
+          },
+          "401": {
+            "expectations": {
+              "httpStatus": 401
+            }
+          },
+          "403": {
+            "expectations": {
+              "httpStatus": 403
+            }
+          },
+          "404": {
+            "expectations": {
+              "httpStatus": 404
+            }
+          },
+          "405": {
+            "expectations": {
+              "httpStatus": 405
+            }
+          },
+          "409": {
+            "expectations": {
+              "httpStatus": 409
+            }
+          },
+          "415": {
+            "expectations": {
+              "httpStatus": 415
+            }
+          },
+          "429": {
+            "expectations": {
+              "httpStatus": 429
+            }
+          },
+          "500": {
+            "expectations": {
+              "httpStatus": 500
+            }
+          },
+          "503": {
+            "expectations": {
+              "httpStatus": 503
+            }
+          },
+          "504": {
+            "expectations": {
+              "httpStatus": 504
+            }
+          }
+        }
+      }
+    },
+    "qrSinEntregaGeneration": {
+      "operationId": "qrSinEntregaGeneration",
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "fuzzing": true,
+          "requests": [
+            {
+              "$ref": "#/operations/qrSinEntregaGeneration/request",
+              "fuzzing": true
+            }
+          ]
+        }
+      ],
+      "request": {
+        "operationId": "qrSinEntregaGeneration",
+        "auth": [
+          "ApiKeyAuth"
+        ],
+        "request": {
+          "type": "42c",
+          "details": {
+            "url": "{{host}}/orderQRScansinEntrega",
+            "method": "POST",
+            "headers": [
+              {
+                "key": "Channel-Id",
+                "value": "MOBILE"
+              },
+              {
+                "key": "Country-Code",
+                "value": "MX"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Language",
+                "value": "SPA"
+              },
+              {
+                "key": "User-Agent",
+                "value": "exampleApp/1.0 <comments>"
+              },
+              {
+                "key": "Tracking-Id",
+                "value": "4bd9e9c2-4989-4f21-8398-ad9d19ef0f66"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "deviceId": "8343e0a88a6f92b8",
+                "supplySource": "737377337"
+              }
+            },
+            "operationId": "qrSinEntregaGeneration"
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "400": {
+            "expectations": {
+              "httpStatus": 400
+            }
+          },
+          "401": {
+            "expectations": {
+              "httpStatus": 401
+            }
+          },
+          "403": {
+            "expectations": {
+              "httpStatus": 403
+            }
+          },
+          "404": {
+            "expectations": {
+              "httpStatus": 404
+            }
+          },
+          "405": {
+            "expectations": {
+              "httpStatus": 405
+            }
+          },
+          "409": {
+            "expectations": {
+              "httpStatus": 409
+            }
+          },
+          "415": {
+            "expectations": {
+              "httpStatus": 415
+            }
+          },
+          "429": {
+            "expectations": {
+              "httpStatus": 429
+            }
+          },
+          "500": {
+            "expectations": {
+              "httpStatus": 500
+            }
+          },
+          "503": {
+            "expectations": {
+              "httpStatus": 503
+            }
+          },
+          "504": {
+            "expectations": {
+              "httpStatus": 504
+            }
+          }
+        }
+      }
+    }
+  },
+  "environments": {
+    "default": {
+      "variables": {
+        "ApiKeyAuth": {
+          "from": "environment",
+          "name": "SCAN42C_SECURITY_APIKEYAUTH",
+          "required": true
+        },
+        "OAuth2": {
+          "from": "environment",
+          "name": "SCAN42C_SECURITY_OAUTH2",
+          "required": false,
+          "default": "secret_to_be_overridden"
+        },
+        "host": {
+          "from": "environment",
+          "name": "SCAN42C_HOST",
+          "required": false,
+          "default": "https://api-dev.oxxo.io/sys-cnt/api/v1"
+        }
+      }
+    }
+  }
 }

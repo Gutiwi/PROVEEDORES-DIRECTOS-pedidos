@@ -55,7 +55,32 @@ paths:
             format: uuid
             example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
           required: true
-          description: Identificador único para trazabilidad de la petición.
+          description: Identificador único utilizado para trazabilidad de la petición.
+        - in: header
+          name: Channel-Id
+          schema:
+            type: string
+            example: MOBILE
+            pattern: '[A-Z]'
+          required: true
+          example: MOBILE
+          description: Canal de consumo del servicio. Ejemplos - |MOBILE|APP|.
+        - in: header
+          name: Country-Code
+          schema:
+            type: string
+            pattern: '[A-Z]'
+          required: true
+          example: MX
+          description: País desde donde se ejecuta la petición. Ejemplos - MX|US|CO|CL|BR.
+        - in: header
+          name: Language
+          schema:
+            type: string
+            example: SPA
+          required: true
+          example: SPA
+          description: Lenguaje soportado del contenido. Ejemplo - SPA = Español (Único soportado).
         - in: header
           name: User-Agent
           schema:
@@ -64,6 +89,13 @@ paths:
           required: true
           example: exampleApp/1.0 <comments>
           description: 'Agente de usuario que permite a los servidores y servicios de red identificar la aplicación, sistema operativo, compañía, y/o la versión del user agent (en-US) que hace la invocación. Syntax - product / product-version comment.'
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+          required: true
+          example: application/json
+          description: Indica el tipo de contenido del recurso que se va transmitir por la petición.
         - in: header
           name: Authorization
           schema:
@@ -75,6 +107,7 @@ paths:
           name: x-Gateway-APIKey
           schema:
             type: string
+            format: uuid
           required: true
           example: aacb0ad9-94dc-4dbb-85d5-e03f85fd068c
           description: identificador único que sirve para identificar a una aplicación o usuario. API Key se obtiene mediante la suscripción al API.
