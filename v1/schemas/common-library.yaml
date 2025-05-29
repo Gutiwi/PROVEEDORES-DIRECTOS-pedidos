@@ -2,43 +2,68 @@
 ## Definir todos los objetos comunes ##
 # *************************************
 
+
 QRProcessingRequest:
-  type: object
-  description: Datos requeridos para procesar la lectura del QR
-  required: true
-  content:
+type: object
+description: Cuerpo de petición que contiene los parametros de entrada .
+required: true
+content:
     application/json:
       schema:
         required:
           - crPlaza
           - crTienda
-          - fuenteAbasto
-          - numeroPedido
+          - supplySource
+          - orderPurchase
+          - skuScanned
           - deviceId
+          - qrFormat
         properties:
           crPlaza:
             type: string
             nullable: false
             maxLength: 5
             minLength: 5
-            description: CR crPlaza a la cual pertenece el pedido
+            description: CR Plaza de la tienda a la cual pertenece el pedido
           crTienda:
             type: string
             nullable: false
             minLength: 5
             description: CR de la tienda a la cual pertenece el pedido
-          fuenteAbasto:
+          supplySource:
             type: number
             nullable: false
             maximum: 20
             minimum: 1
-            description: CR de la tienda a la cual pertenece el pedido
-          numeroPedido:
+            description: Fuente de abasto
+          orderPurchase:
             type: number
             nullable: false
             maximum: 20
             minimum: 1
-            description: fecha final
+            description: Numero de pedido a ingresar
+          skuScanned:
+            type: array
+            description: Lista de skus a entregar
+            items:
+             type: object
+             required:
+               - s
+               - a
+             properties:
+              s: 
+                type: integer
+                nullable: false
+                minimum: 1
+                description: SKU del articulo
+                example: 12345
+              a:
+                type: number
+                format: float
+                nullable: false
+                minimum: 1
+                description: Unidades a entregar del articulo
+                example: 2.5
           deviceId:
             type: string
             nullable: false
@@ -46,6 +71,16 @@ QRProcessingRequest:
             description: Identificador único del dispositivo. 
                                Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
                                Si se intenta reutilizar, el sistema responderá con error 409.
+          qrFormat:
+            type: string
+            minLength: 1
+            enum: [BASE64,url]
+            description: Formato deseado de la respuesta del QR. Puede ser `BASE64` o `URL`.
+            example: BASE64
+
+
+
+
 
 
 
