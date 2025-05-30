@@ -25,7 +25,7 @@ security:
   - OAuth2:
       - read
 components:
-  securitySchemes:
+  securitySchemes:   
     ApiKeyAuth:
       type: apiKey
       in: header
@@ -55,7 +55,7 @@ paths:
             format: uuid
             example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
           required: true
-          description: Identificador único utilizado para trazabilidad de la petición.
+          description: Identificador único utilizado para trazabilidad de la petición, Formato UUID.
         - in: header
           name: Channel-Id
           schema:
@@ -63,8 +63,8 @@ paths:
             example: MOBILE
             pattern: '[A-Z]'
           required: true
-          example: MOBILE
-          description: Canal de consumo del servicio. Ejemplos - |MOBILE|APP|.
+          example: WEB
+          description: Canal de consumo del servicio. Ejemplos - WEB|MOBILE|APP|POS.
         - in: header
           name: Country-Code
           schema:
@@ -111,23 +111,6 @@ paths:
           required: true
           example: aacb0ad9-94dc-4dbb-85d5-e03f85fd068c
           description: identificador único que sirve para identificar a una aplicación o usuario. API Key se obtiene mediante la suscripción al API.
-      requestBody:
-        description: Cuerpo de petición que contiene los parametros de entrada .
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - secureId
-              properties:
-                secureId:
-                  type: string
-                  nullable: false
-                  minLength: 1
-                  description: secureId del dispositivo
-            example:
-                  secureId: "10CAN"
       responses:
         '200':
           description: success
@@ -138,7 +121,6 @@ paths:
                 required:
                   - code
                   - message
-                  - deviceId
                 properties:
                   code:
                     type: string
@@ -152,17 +134,10 @@ paths:
                     minLength: 1
                     maxLength: 100
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
-                    nullable: false
-                  deviceId: 
-                   type: string
-                   minLength: 1
-                   nullable: false
-                   description: ID único generado para el dispositivo.
-                   example: "DEV-4a8f3d29ef01"  
+                    nullable: false 
               example:
-                code: S200000
+                code: X200000
                 message: Success
-                deviceId: "DEV-4a8f3d29ef01"
         '400':
           description: Unsuccessful requests
           content:
@@ -188,7 +163,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S400112
+                code: X400112
                 message: The client has issued a malformed or illegal request.
         '401':
           description: Unauthorized
@@ -215,7 +190,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S401000
+                code: X401000
                 message: The specified token is invalid or has expired
         '403':
           description: Forbidden
@@ -242,7 +217,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S403000
+                code: X403000
                 message: ' Application has been identified but it is currently suspended. Please contact the API Gateway administrator for further details.'
         '404':
           description: Not Found
@@ -269,7 +244,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S404000
+                code: X404000
                 message: Resource * not found
         '405':
           description: Method Not Allowed
@@ -296,7 +271,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S405000
+                code: X405000
                 message: 'Method not allowed : *'
         '409':
            description: Conflict - "Duplicate identifier"
@@ -323,7 +298,7 @@ paths:
                       pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                       nullable: false
                example:
-                     code: S409000
+                     code: X409000
                      message: The device has already been registered.
 
         '415':
@@ -351,7 +326,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S415000
+                code: X415000
                 message: Format * is not supported by the request.
         '429':
           description: Too Many Requests
@@ -378,7 +353,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S429000
+                code: X429000
                 message: Too many requests. please try gain later
         '500':
           description: Internal Server Error
@@ -407,7 +382,7 @@ paths:
               examples:
                 '500':
                   value:
-                    code: S500000
+                    code: X500000
                     message: 'Internal server error has occurred, please try again later.'
         '503':
           description: Service Unavailable
@@ -434,7 +409,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S503000
+                code: X503000
                 message: 'Service not available, please try again later.'
         '504':
           description: Gateway Timeout
@@ -461,7 +436,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S504000
+                code: X504000
                 message: 'Connection timed out, please try again later.'
 
 
@@ -481,16 +456,16 @@ paths:
             format: uuid
             example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
           required: true
-          description: Identificador único utilizado para trazabilidad de la petición.
+          description: Identificador único utilizado para trazabilidad de la petición Formato UUID.
         - in: header
           name: Channel-Id
           schema:
             type: string
-            example: MOBILE
+            example: WEB
             pattern: '[A-Z]'
           required: true
-          example: MOBILE
-          description: Canal de consumo del servicio. Ejemplos - |MOBILE|APP|.
+          example: WEB
+          description: Canal de consumo del servicio. Ejemplos - WEB|MOBILE|APP|POS.
         - in: header
           name: Country-Code
           schema:
@@ -548,9 +523,9 @@ paths:
                 - crPlaza
                 - crTienda
                 - supplySource
-                - orderPurchase
-                - skuScanned
+                - purchaseOrder
                 - deviceId
+                - skuScanned
                 - qrFormat
               properties:
                 crPlaza:
@@ -570,12 +545,19 @@ paths:
                   maximum: 20
                   minimum: 1
                   description: Fuente de abasto
-                orderPurchase:
+                purchaseOrder:
                   type: number
                   nullable: false
                   maximum: 20
                   minimum: 1
                   description: Numero de pedido a ingresar
+                deviceId:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  description: Identificador único del dispositivo. 
+                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
+                               Si se intenta reutilizar, el sistema responderá con error .
                 skuScanned:
                   type: array
                   description: Lista de skus a entregar
@@ -598,13 +580,6 @@ paths:
                      minimum: 1
                      description: Unidades a entregar del articulo
                      example: 2.5
-                deviceId:
-                  type: string
-                  nullable: false
-                  minLength: 1
-                  description: Identificador único del dispositivo. 
-                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
-                               Si se intenta reutilizar, el sistema responderá con error 409.
                 qrFormat:
                   type: string
                   minLength: 1
@@ -615,13 +590,13 @@ paths:
                   crPlaza: "10CAN"
                   crTienda: "10CAN"
                   supplySource: 737377337
-                  orderPurchase: 66
+                  purchaseOrder: 66
+                  deviceId: "8343e0a88a6f92b8"
                   skuScanned: 
                   - s: 12345
                     a: 3.0
                   - s: 67890
                     a: 1.5
-                  deviceId: "8343e0a88a6f92b8"
                   qrFormat: "BASE64"
 
       responses:
@@ -668,13 +643,13 @@ paths:
                     base64Response:
                       summary: QR en formato BASE64
                       value:
-                       code: S200000
+                       code: X200000
                        message: Success
                        qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
                     urlResponse:
                        summary: QR en formato URL
                        value:
-                        code: S200000
+                        code: X200000
                         message: Success
                         qrImageUrl: "https://www.oxxo.com/qrcode/image"
                 
@@ -703,7 +678,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S400112
+                code: X400112
                 message: The client has issued a malformed or illegal request.
         '401':
           description: Unauthorized
@@ -730,7 +705,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S401000
+                code: X401000
                 message: The specified token is invalid or has expired
         '403':
           description: Forbidden
@@ -757,7 +732,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S403000
+                code: X403000
                 message: ' Application has been identified but it is currently suspended. Please contact the API Gateway administrator for further details.'
         '404':
           description: Not Found
@@ -784,7 +759,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S404000
+                code: X404000
                 message: Resource * not found
         '405':
           description: Method Not Allowed
@@ -811,7 +786,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S405000
+                code: X405000
                 message: 'Method not allowed : *'
         '409':
            description: Conflict - "Duplicate identifier"
@@ -838,9 +813,7 @@ paths:
                       pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                       nullable: false
                example:
-                  deviceAlreadyRegistered:
-                    value:
-                     code: S409001
+                     code: X409001
                      message: The device has already been registered.
 
         '415':
@@ -868,7 +841,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S415000
+                code: X415000
                 message: Format * is not supported by the request.
         '429':
           description: Too Many Requests
@@ -895,7 +868,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S429000
+                code: X429000
                 message: Too many requests. please try gain later
         '500':
           description: Internal Server Error
@@ -922,7 +895,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                    code: S500000
+                    code: X500000
                     message: 'Internal server error has occurred, please try again later.'
         '503':
           description: Service Unavailable
@@ -949,7 +922,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S503000
+                code: X503000
                 message: 'Service not available, please try again later.'
         '504':
           description: Gateway Timeout
@@ -976,7 +949,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S504000
+                code: X504000
                 message: 'Connection timed out, please try again later.'
                 
   /orderQRScanTradicional:
@@ -995,16 +968,16 @@ paths:
             format: uuid
             example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
           required: true
-          description: Identificador único utilizado para trazabilidad de la petición.
+          description: Identificador único utilizado para trazabilidad de la petición, . Formato UUID.
         - in: header
           name: Channel-Id
           schema:
             type: string
-            example: MOBILE
+            example: WEB
             pattern: '[A-Z]'
           required: true
-          example: MOBILE
-          description: Canal de consumo del servicio. Ejemplos - |MOBILE|APP|.
+          example: WEB
+          description: Canal de consumo del servicio. Ejemplos - WEB|MOBILE|APP|POS.
         - in: header
           name: Country-Code
           schema:
@@ -1060,8 +1033,8 @@ paths:
                 type: object
                 required:
                 - supplySource
-                - skuScanned
                 - deviceId
+                - skuScanned
                 - qrFormat
                 properties:
                  supplySource:
@@ -1069,6 +1042,13 @@ paths:
                   nullable: false
                   minimum: 1
                   description: Fuente de abasto
+                 deviceId:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  description: Identificador único del dispositivo. 
+                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
+                               Si se intenta reutilizar, el sistema responderá con error 
                  skuScanned:
                   type: array
                   description: Lista de skus a entregar
@@ -1091,13 +1071,6 @@ paths:
                      minimum: 1
                      description: Unidades a entregar del articulo
                      example: 2.5
-                 deviceId:
-                  type: string
-                  nullable: false
-                  minLength: 1
-                  description: Identificador único del dispositivo. 
-                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
-                               Si se intenta reutilizar, el sistema responderá con error 409
                  qrFormat:
                   type: string
                   minLength: 1
@@ -1106,12 +1079,12 @@ paths:
                   example: BASE64
               example:
                   supplySource: 737377337
+                  deviceId: "8343e0a88a6f92b8"
                   skuScanned: 
                   - s: 12345
                     a: 3.0
                   - s: 67890
                     a: 1.5
-                  deviceId: "8343e0a88a6f92b8"
                   qrFormat: "BASE64"
       
       responses:
@@ -1158,13 +1131,13 @@ paths:
                     base64Response:
                       summary: QR en formato BASE64
                       value:
-                       code: S200000
+                       code: X200000
                        message: Success
                        qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
                     urlResponse:
                        summary: QR en formato URL
                        value:
-                        code: S200000
+                        code: X200000
                         message: Success
                         qrImageUrl: "https://www.oxxo.com/qrcode/image"
 
@@ -1193,7 +1166,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S400112
+                code: X400112
                 message: The client has issued a malformed or illegal request.
         '401':
           description: Unauthorized
@@ -1220,7 +1193,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S401000
+                code: X401000
                 message: The specified token is invalid or has expired
         '403':
           description: Forbidden
@@ -1247,7 +1220,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S403000
+                code: X403000
                 message: ' Application has been identified but it is currently suspended. Please contact the API Gateway administrator for further details.'
         '404':
           description: Not Found
@@ -1274,7 +1247,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S404000
+                code: X404000
                 message: Resource * not found
         '405':
           description: Method Not Allowed
@@ -1301,7 +1274,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S405000
+                code: X405000
                 message: 'Method not allowed : *'
         '409':
            description: Conflict - "Duplicate identifier"
@@ -1328,7 +1301,7 @@ paths:
                       pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                       nullable: false
               example:
-                     code: S409001
+                     code: X409001
                      message: The device has already been registered.
 
         '415':
@@ -1356,7 +1329,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S415000
+                code: X415000
                 message: Format * is not supported by the request.
         '429':
           description: Too Many Requests
@@ -1383,7 +1356,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S429000
+                code: X429000
                 message: Too many requests. please try gain later
         '500':
           description: Internal Server Error
@@ -1410,7 +1383,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                    code: S500000
+                    code: X500000
                     message: 'Internal server error has occurred, please try again later.'
         '503':
           description: Service Unavailable
@@ -1437,7 +1410,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S503000
+                code: X503000
                 message: 'Service not available, please try again later.'
         '504':
           description: Gateway Timeout
@@ -1464,7 +1437,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S504000
+                code: X504000
                 message: 'Connection timed out, please try again later.'
   /orderQRScansinEntrega:
     post:
@@ -1481,16 +1454,16 @@ paths:
             format: uuid
             example: 4bd9e9c2-4989-4f21-8398-ad9d19ef0f66
           required: true
-          description: Identificador único utilizado para trazabilidad de la petición.
+          description: Identificador único utilizado para trazabilidad de la petición , Formato UUID.
         - in: header
           name: Channel-Id
           schema:
             type: string
-            example: MOBILE
+            example: WEB
             pattern: '[A-Z]'
           required: true
-          example: MOBILE
-          description: Canal de consumo del servicio. Ejemplos - |MOBILE|APP|.
+          example: WEB
+          description: Canal de consumo del servicio. Ejemplos - WEB|MOBILE|APP|POS.
         - in: header
           name: Country-Code
           schema:
@@ -1560,7 +1533,7 @@ paths:
                    minLength: 1
                    description: Identificador único del dispositivo. 
                                Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
-                               Si se intenta reutilizar, el sistema responderá con error 409
+                               Si se intenta reutilizar, el sistema responderá con error.
                   qrFormat:
                    type: string
                    minLength: 1
@@ -1615,13 +1588,13 @@ paths:
                     base64Response:
                       summary: QR en formato BASE64
                       value:
-                       code: S200000
+                       code: X200000
                        message: Success
                        qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
                     urlResponse:
                        summary: QR en formato URL
                        value:
-                        code: S200000
+                        code: X200000
                         message: Success
                         qrImageUrl: "https://www.oxxo.com/qrcode/image"
              
@@ -1650,7 +1623,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S400112
+                code: X400112
                 message: The client has issued a malformed or illegal request.
         '401':
           description: Unauthorized
@@ -1677,7 +1650,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S401000
+                code: X401000
                 message: The specified token is invalid or has expired
         '403':
           description: Forbidden
@@ -1704,7 +1677,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S403000
+                code: X403000
                 message: ' Application has been identified but it is currently suspended. Please contact the API Gateway administrator for further details.'
         '404':
           description: Not Found
@@ -1731,7 +1704,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S404000
+                code: X404000
                 message: Resource * not found
         '405':
           description: Method Not Allowed
@@ -1758,7 +1731,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S405000
+                code: X405000
                 message: 'Method not allowed : *'
         '409':
            description: Conflict - "Duplicate identifier"
@@ -1785,7 +1758,7 @@ paths:
                       pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                       nullable: false
               example:
-                     code: S409001
+                     code: X409001
                      message: The device has already been registered.
 
         '415':
@@ -1813,7 +1786,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S415000
+                code: X415000
                 message: Format * is not supported by the request.
         '429':
           description: Too Many Requests
@@ -1840,7 +1813,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S429000
+                code: X429000
                 message: Too many requests. please try gain later
         '500':
           description: Internal Server Error
@@ -1867,7 +1840,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                    code: S500000
+                    code: X500000
                     message: 'Internal server error has occurred, please try again later.'
         '503':
           description: Service Unavailable
@@ -1894,7 +1867,7 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S503000
+                code: X503000
                 message: 'Service not available, please try again later.'
         '504':
           description: Gateway Timeout
@@ -1921,5 +1894,5 @@ paths:
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false
               example:
-                code: S504000
+                code: X504000
                 message: 'Connection timed out, please try again later.'

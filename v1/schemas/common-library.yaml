@@ -14,9 +14,9 @@ content:
           - crPlaza
           - crTienda
           - supplySource
-          - orderPurchase
-          - skuScanned
+          - purchaseOrder
           - deviceId
+          - skuScanned
           - qrFormat
         properties:
           crPlaza:
@@ -36,12 +36,19 @@ content:
             maximum: 20
             minimum: 1
             description: Fuente de abasto
-          orderPurchase:
+          purchaseOrder:
             type: number
             nullable: false
             maximum: 20
             minimum: 1
             description: Numero de pedido a ingresar
+          deviceId:
+            type: string
+            nullable: false
+            minLength: 1
+            description: Identificador único del dispositivo. 
+                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
+                               Si se intenta reutilizar, el sistema responderá con error .
           skuScanned:
             type: array
             description: Lista de skus a entregar
@@ -64,13 +71,6 @@ content:
                 minimum: 1
                 description: Unidades a entregar del articulo
                 example: 2.5
-          deviceId:
-            type: string
-            nullable: false
-            minLength: 1
-            description: Identificador único del dispositivo. 
-                               Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
-                               Si se intenta reutilizar, el sistema responderá con error 409.
           qrFormat:
             type: string
             minLength: 1
