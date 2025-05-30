@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title:  API Generación de informacion del QR de Proveedores Directos
   description: |
-    API de Sistema que expone la version 1.0 de los servicios: 
+    API que expone la version 1.0 de los servicios: 
     1. Enviar informacion de ordenes escaneados.
 
     El servicio cumple con lo siguiente:
