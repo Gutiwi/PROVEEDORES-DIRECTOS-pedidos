@@ -121,6 +121,7 @@ paths:
                 required:
                   - code
                   - message
+                  - deviceId
                 properties:
                   code:
                     type: string
@@ -135,9 +136,14 @@ paths:
                     maxLength: 100
                     pattern: '^[ -00-9a-zA-Z\u00C0-\u017F]*$'
                     nullable: false 
+                  deviceId:
+                    type: string
+                    format: uuid
+                    description: Identificador único generado para el dispositivo
               example:
                 code: X200000
                 message: Success
+                deviceId: 8343e0a88a6f92b8
         '400':
           description: Unsuccessful requests
           content:
@@ -439,7 +445,6 @@ paths:
                 code: X504000
                 message: 'Connection timed out, please try again later.'
 
-
   /orderQRScanReple:
     post:
       tags:
@@ -526,7 +531,6 @@ paths:
                 - purchaseOrder
                 - deviceId
                 - skuScanned
-                - qrFormat
               properties:
                 crPlaza:
                   type: string
@@ -580,12 +584,6 @@ paths:
                      minimum: 1
                      description: Unidades a entregar del articulo
                      example: 2.5
-                qrFormat:
-                  type: string
-                  minLength: 1
-                  enum: [BASE64,url]
-                  description: Formato deseado de la respuesta del QR. Puede ser `BASE64` o `URL`.
-                  example: BASE64
             example:
                   crPlaza: "10CAN"
                   crTienda: "10CAN"
@@ -597,8 +595,6 @@ paths:
                     a: 3.0
                   - s: 67890
                     a: 1.5
-                  qrFormat: "BASE64"
-
       responses:
         '200':
           description: success
@@ -609,6 +605,7 @@ paths:
                 required:
                   - code
                   - message
+                  - qrImageBase64
                 properties:
                   code:
                     type: string
@@ -631,27 +628,10 @@ paths:
                                  que incluye la información del pedido, siguiendo el estándar de lectura del módulo
                                  "Verificación de Mercancía Proveedores Directos" en la app "OXXO al día".
                    example: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."  
-                  qrImageUrl:
-                    type: string
-                    format: uri
-                    nullable: true
-                    description: URL del QR. Solo presente si `qrFormat` es `url`.
-                oneOf:
-                    - required: [qrImageBase64]
-                    - required: [qrImageUrl]
-              examples:
-                    base64Response:
-                      summary: QR en formato BASE64
-                      value:
+              example:
                        code: X200000
                        message: Success
-                       qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
-                    urlResponse:
-                       summary: QR en formato URL
-                       value:
-                        code: X200000
-                        message: Success
-                        qrImageUrl: "https://www.oxxo.com/qrcode/image"
+                       qrImageBase64: iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N...
                 
         '400':
           description: Unsuccessful requests
@@ -1035,7 +1015,6 @@ paths:
                 - supplySource
                 - deviceId
                 - skuScanned
-                - qrFormat
                 properties:
                  supplySource:
                   type: number
@@ -1071,12 +1050,6 @@ paths:
                      minimum: 1
                      description: Unidades a entregar del articulo
                      example: 2.5
-                 qrFormat:
-                  type: string
-                  minLength: 1
-                  enum: [BASE64,url]
-                  description: Formato deseado de la respuesta del QR. Puede ser `BASE64` o `URL`.
-                  example: BASE64
               example:
                   supplySource: 737377337
                   deviceId: "8343e0a88a6f92b8"
@@ -1085,7 +1058,6 @@ paths:
                     a: 3.0
                   - s: 67890
                     a: 1.5
-                  qrFormat: "BASE64"
       
       responses:
         '200':
@@ -1097,6 +1069,7 @@ paths:
                 required:
                   - code
                   - message
+                  - qrImageBase64
                 properties:
                   code:
                     type: string
@@ -1119,28 +1092,10 @@ paths:
                                  que incluye la información del pedido, siguiendo el estándar de lectura del módulo
                                  "Verificación de Mercancía Proveedores Directos" en la app "OXXO al día".
                     example: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
-                  qrImageUrl:
-                    type: string
-                    format: uri
-                    nullable: true
-                    description: URL del QR. Solo presente si `qrFormat` es `url`.
-                oneOf:
-                    - required: [qrImageBase64]
-                    - required: [qrImageUrl]
-              examples:
-                    base64Response:
-                      summary: QR en formato BASE64
-                      value:
+              example:
                        code: X200000
                        message: Success
-                       qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
-                    urlResponse:
-                       summary: QR en formato URL
-                       value:
-                        code: X200000
-                        message: Success
-                        qrImageUrl: "https://www.oxxo.com/qrcode/image"
-
+                       qrImageBase64: iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N...  
         '400':
           description: Unsuccessful requests
           content:
@@ -1520,7 +1475,6 @@ paths:
                required:
                 - supplySource
                 - deviceId
-                - qrFormat
                properties:
                   supplySource:
                    type: number
@@ -1534,16 +1488,9 @@ paths:
                    description: Identificador único del dispositivo. 
                                Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
                                Si se intenta reutilizar, el sistema responderá con error.
-                  qrFormat:
-                   type: string
-                   minLength: 1
-                   enum: [BASE64,url]
-                   description: Formato deseado de la respuesta del QR. Puede ser `BASE64` o `URL`.
-                   example: BASE64
               example:
                   supplySource: 737377337
                   deviceId: "8343e0a88a6f92b8"
-                  qrFormat: "BASE64"
       responses:
         '200':
           description: success
@@ -1554,6 +1501,7 @@ paths:
                 required:
                   - code
                   - message
+                  - qrImageBase64
                 properties:
                   code:
                     type: string
@@ -1576,28 +1524,10 @@ paths:
                                  que incluye la información del pedido, siguiendo el estándar de lectura del módulo
                                  "Verificación de Mercancía Proveedores Directos" en la app "OXXO al día".
                    example: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
-                  qrImageUrl:
-                    type: string
-                    format: uri
-                    nullable: true
-                    description: URL del QR. Solo presente si `qrFormat` es `url`.
-                oneOf:
-                    - required: [qrImageBase64]
-                    - required: [qrImageUrl]
-              examples:
-                    base64Response:
-                      summary: QR en formato BASE64
-                      value:
+              example:
                        code: X200000
                        message: Success
-                       qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."
-                    urlResponse:
-                       summary: QR en formato URL
-                       value:
-                        code: X200000
-                        message: Success
-                        qrImageUrl: "https://www.oxxo.com/qrcode/image"
-             
+                       qrImageBase64: "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0N..."          
         '400':
           description: Unsuccessful requests
           content:
