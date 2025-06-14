@@ -17,7 +17,6 @@ content:
           - purchaseOrder
           - deviceId
           - skuScanned
-          - qrFormat
         properties:
           crPlaza:
             type: string
@@ -29,28 +28,32 @@ content:
             type: string
             nullable: false
             minLength: 5
+            maxLength: 5
             description: CR de la tienda a la cual pertenece el pedido
           supplySource:
             type: number
             nullable: false
-            maximum: 20
             minimum: 1
+            maximum: 255
             description: Fuente de abasto
           purchaseOrder:
             type: number
             nullable: false
-            maximum: 20
             minimum: 1
+            maximum: 255
             description: Numero de pedido a ingresar
           deviceId:
             type: string
             nullable: false
             minLength: 1
+            maxLength: 255
             description: Identificador único del dispositivo. 
                                Este valor debe ser único por pedido y no puede reutilizarse más de una vez. 
                                Si se intenta reutilizar, el sistema responderá con error .
           skuScanned:
             type: array
+            minItems: 1
+            maxItems: 300
             description: Lista de skus a entregar
             items:
              type: object
@@ -62,21 +65,18 @@ content:
                 type: integer
                 nullable: false
                 minimum: 1
+                maximum: 255
                 description: SKU del articulo
-                example: 12345
+                example: 7500478001057
               a:
                 type: number
                 format: float
                 nullable: false
                 minimum: 1
+                maximum: 5
                 description: Unidades a entregar del articulo
-                example: 2.5
-          qrFormat:
-            type: string
-            minLength: 1
-            enum: [BASE64,url]
-            description: Formato deseado de la respuesta del QR. Puede ser `BASE64` o `URL`.
-            example: BASE64
+                example: 5.0
+
 
 
 
